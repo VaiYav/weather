@@ -1,18 +1,31 @@
-<template>
-  <div id="app">
-    <header>
-      <span>Vue.js PWA</span>
-    </header>
-    <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
-      <router-view></router-view>
-    </main>
-  </div>
+<template lang="pug">
+  div#app
+    header
+      b-field(label="")
+        b-input(placeholder="Add city", rounded, v-model="city", @keyup.enter.native="submit")
+      button(@click="submit").button Send
+    main
+      router-view
 </template>
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data: () => ({
+    city: '',
+    cities: ['Kiev', 'Kharkiv', 'Miami']
+  }),
+  methods: {
+    submit () {
+      this.$store.dispatch('fetchCityWeather', {city: this.city})
+      this.city = ''
+    }
+  },
+  mounted () {
+    for (let i = 0; i < this.cities.length; i++) {
+      this.$store.dispatch('fetchCityWeather', {city: this.cities[i]})
+    }
+  }
 }
 </script>
 
@@ -27,7 +40,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-
+.label{
+  color: #fff;
+}
 main {
   text-align: center;
   margin-top: 40px;
@@ -35,10 +50,10 @@ main {
 
 header {
   margin: 0;
-  height: 56px;
-  padding: 0 16px 0 24px;
+  padding: 10px;
   background-color: #35495E;
   color: #ffffff;
+  display: flex;
 }
 
 header span {
